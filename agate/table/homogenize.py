@@ -61,7 +61,7 @@ def homogenize(self, key, compare_values, default_row=None):
 
     for difference in differences:
         if callable(default_row):
-            rows.append(Row(default_row(difference), self._column_names))
+            new_row = default_row(difference)
         else:
             if default_row is not None:
                 new_row = list(default_row)
@@ -71,6 +71,8 @@ def homogenize(self, key, compare_values, default_row=None):
             for i, d in zip(column_indexes, difference):
                 new_row.insert(i, d)
 
-            rows.append(Row(new_row, self._column_names))
+        for i, c in enumerate(self._column_types):
+            new_row[i] = c.cast(new_row[i])
+        rows.append(Row(new_row, self._column_names))
 
     return self._fork(rows)
