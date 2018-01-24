@@ -75,4 +75,9 @@ def homogenize(self, key, compare_values, default_row=None):
             new_row[i] = c.cast(new_row[i])
         rows.append(Row(new_row, self._column_names))
 
+    # Remove row_names (if any) to prevent order_by bugs
+    # Ideal fix: infer missing data (but no information
+    #            regarding row names origin)
+    self._row_names = None
+
     return self._fork(rows)
